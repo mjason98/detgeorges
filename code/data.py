@@ -38,6 +38,9 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
 
         (datasets, dataloaders) Two dictionaries with the datasets and dataloaders for 'train' and 'val'
     '''
+    if not os.path.isdir("pts"):
+        os.mkdir("pts")
+        
     data_images_downloader(positive_csv, image_folder="pos", data_folder=data_folder)
     data_images_downloader(negative_csv, image_folder="neg", data_folder=data_folder)
 
@@ -50,7 +53,7 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
     
     # load all images
     image_dataset = datasets.ImageFolder(root='data/', transform=data_transform)
-    save_data_indices(image_dataset, data_folder)
+    save_data_indices(image_dataset, 'pts')
 
     #split the data in train dataset and val dataset
     datasets_d = train_val_dataset(image_dataset, split)

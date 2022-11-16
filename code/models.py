@@ -50,6 +50,7 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
     
     if not os.path.isdir("pts"):
         os.mkdir("pts")
+        
     save_path = os.path.join("pts", model_name)
     
     since = time.time()
