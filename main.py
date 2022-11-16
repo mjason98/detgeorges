@@ -1,12 +1,16 @@
-from code.utils import data_images_downloader
+from code.data import create_train_datasets
 
-POSITIVE_EXAMPLES="data/georges.csv"
-NEGATIVE_EXAMPLES="data/non_georges.csv"
+POSITIVE_EXAMPLES="georges.csv"
+NEGATIVE_EXAMPLES="non_georges.csv"
+VALIDATION_SPLIT_P=0.1
+NUM_WORKERS=4
+
+def train_model():
+    datasets, dataloaders = create_train_datasets(POSITIVE_EXAMPLES, NEGATIVE_EXAMPLES, split=VALIDATION_SPLIT_P, num_workers=NUM_WORKERS)
 
 
 def main():
-    data_images_downloader(POSITIVE_EXAMPLES, image_folder="pos", data_folder="data")
-    data_images_downloader(NEGATIVE_EXAMPLES, image_folder="neg", data_folder="data")
+    train_model();
 
 if __name__ == '__main__':
     main()
