@@ -107,14 +107,12 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
             
             epoch_stats[phase].append((epoch_loss, epoch_acc))
 
-            print (f"{phase} loss {epoch_loss} acc {epoch_acc}")
+            print (f"{phase} epoch {epoch}/{epochs}: loss {epoch_loss} acc {epoch_acc}\n")
             
             #  best model
             if epoch_acc > best_acc and phase == 'val':
                 best_acc = epoch_acc
                 save_model(model, save_path)
-
-        print()
     
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
