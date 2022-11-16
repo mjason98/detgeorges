@@ -18,7 +18,7 @@ def save_data_indices(dataset, data_folder):
         for key in dataset.class_to_idx:
             file.write(key + ' ' + str(dataset.class_to_idx[key]) + '\n')
 
-def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_workers=4, image_size=224, data_folder='data'):
+def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_workers=4, image_size=224, data_folder='train'):
     '''
     Creates two datasets for training the model: 'train' the training set and 'val' the validation set during training.
 
@@ -40,8 +40,8 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
     '''
     if not os.path.isdir("pts"):
         os.mkdir("pts")
-    if not os.path.isdir("data"):
-        os.mkdir("data")
+    if not os.path.isdir("train"):
+        os.mkdir("train")
 
     data_images_downloader(positive_csv, image_folder="pos", data_folder=data_folder)
     data_images_downloader(negative_csv, image_folder="neg", data_folder=data_folder)
@@ -54,7 +54,7 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
     ])
     
     # load all images
-    image_dataset = datasets.ImageFolder(root='data/', transform=data_transform)
+    image_dataset = datasets.ImageFolder(root='train/', transform=data_transform)
     save_data_indices(image_dataset, 'pts')
 
     #split the data in train dataset and val dataset
@@ -63,3 +63,20 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
 
     return datasets_d, dataloaders_d
 
+def create_test_dataset(file_path:str='test/', image_size=224, num_workers=4):
+    '''
+        The directory must contain two folders: 'pos' and 'neg', which will contain the images of the positive and negative classes respectively.
+    '''
+
+    data_transform = transforms.Compose([
+        transforms.Resize(image_size),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    # load all images
+    image_dataset = datasets.ImageFolder(root=file_path, transform=data_transform)
+    #split the data in train dataset and val dataset
+    dataloader = DataLoader(image_dataset,32, shuffle=False, num_workers=num_workers) 
+
+    return image_dataset, dataloader

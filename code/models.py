@@ -1,4 +1,5 @@
-from ntpath import join
+import json
+import sklearn.metrics as metrics
 import torchvision.models as models
 import torch
 import torch.nn as nn
@@ -43,9 +44,9 @@ def create_model_and_optimizer(model:str, lr=0.001, momentum=0.9):
         # for now, a simple optimizer
         optimizer_ft = optim.Adagrad(model_ft.parameters(), lr=lr)#, momentum=0.9)
         # Decay LR by a factor of 0.1 every 7 epochs
-        exp_lr_scheduler = optim.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+        # exp_lr_scheduler = optim.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
-        return model_ft, optimizer_ft, exp_lr_scheduler
+        return model_ft, optimizer_ft, None#exp_lr_scheduler
     else:
         raise Exception(f"Model {model} is not allowed")
 
@@ -103,7 +104,7 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
                 scheduler.step()
 
             epoch_loss = running_loss / dataset_size
-            epoch_acc = running_corrects.double() / dataset_size
+            epoch_acc = running_corrects.double().item() / dataset_size
             
             epoch_stats[phase].append((epoch_loss, epoch_acc))
 
@@ -119,3 +120,42 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
         time_elapsed // 60, time_elapsed % 60))
     
     return epoch_stats
+
+def predict(model, dataloader, model_name='model.pt', load_saved_model=True, show_metrics=True):
+    '''
+        Calculate the metrics given a pre-trained model on the test data set.
+    '''
+    if not os.path.isdir('pts'):
+        os.mkdir('pts')
+    
+    if load_saved_model:
+        load_model(model, os.path.join('pts', model_name))
+    
+    cpu0 = torch.device("cpu")
+
+    y_true, y_pred = [], []
+
+    with torch.no_grad():
+        iter = tqdm(dataloader)
+        for batch in iter:
+
+            inputs = batch[0].to(device)
+            labels = batch[1].to(device).squeeze()
+
+            outputs = model(inputs)
+            _, preds = torch.max(outputs, 1).squeeze()
+            
+            y_true.append(labels.to(cpu0).numpy())
+            y_pred.append(preds.to(cpu0).numpy())
+    
+    y_true = np.concatenate(y_true)
+    y_pred = np.concatenate(y_pred)
+
+    acc = metrics.accuracy_score(y_true, y_pred)
+    f1 = metrics.f1_score(y_true, y_pred)
+
+    if show_metrics:
+        print (f"# Metrics:  acc: {acc} f1: {f1}")
+
+    with open(os.join('pts', model_name+'_test_metrics.txt'), 'w') as file:
+        file.write(json.dumps({'acc': acc, 'f1': f1}))
