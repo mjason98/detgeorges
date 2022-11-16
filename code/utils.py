@@ -47,7 +47,7 @@ def data_images_downloader(csv_path:str, image_folder:str ="images", data_folder
         else:
             print (f"\t WARNING: File { file_name } could not be downloaded")
 
-def train_stats_ploter(train_stats:dict[str, list], save_path='pt', model_name='model', save_raw=True):
+def train_stats_ploter(train_stats:dict, save_path='pt', model_name='model', save_raw=True):
     '''
         Plot the loss and acc values within the stats
 
@@ -55,17 +55,22 @@ def train_stats_ploter(train_stats:dict[str, list], save_path='pt', model_name='
 
         train_stats:dict Array dictionary for the training 'train' and validation 'val' faces.
     '''
-    save_path_fig = os.path.join(save_path, model_name+'.png')
+    save_path_fig1 = os.path.join(save_path, model_name+'_loss.png')
+    save_path_fig2 = os.path.join(save_path, model_name+'_acc.png')
+    
     save_path_raw = os.path.join(save_path, model_name+'.txt')
+
     X = range(len(train_stats['train']))
-    Y1 = train_stats['train']
-    Y2 = train_stats['val']
+    
+    for ft,idx in zip([save_path_fig1, save_path_fig2],[0,1]):
+        Y1 = [v[idx] for v in train_stats['train']]
+        Y2 = [v[idx] for v in train_stats['val']]
 
-    plt.plot(X, Y1, c='blue')
-    plt.plot(X, Y1, c='orange')
-    plt.savefig(save_path_fig)
+        plt.plot(X, Y1, c='blue')
+        plt.plot(X, Y2, c='orange')
+        plt.savefig(ft)
 
-    print ("# Saved figure", add_color(save_path_fig))
+        print ("# Saved figure", add_color(ft))
 
     if save_raw:
         with open(save_path_raw, 'w') as file:

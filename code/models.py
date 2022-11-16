@@ -34,7 +34,7 @@ def create_model_and_optimizer(model:str, lr=0.001, momentum=0.9):
         model_ft = model_ft.to(device)
 
         # for now, a simple optimizer
-        optimizer_ft = optim.Adagrad(model_ft.parameters(), lr=0.001, momentum=0.9)
+        optimizer_ft = optim.Adagrad(model_ft.parameters(), lr=lr)#, momentum=0.9)
         # Decay LR by a factor of 0.1 every 7 epochs
         exp_lr_scheduler = optim.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
@@ -50,7 +50,7 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
     
     if not os.path.isdir("pts"):
         os.mkdir("pts")
-    save_path = os.path,join("pts", model_name)
+    save_path = os.path.join("pts", model_name)
     
     since = time.time()
     best_acc = 0.0
@@ -70,11 +70,9 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
             running_corrects = 0
             dataset_size = dataset_sizes[phase]
 
-            iter = tqdm(range(len(dataloaders[phase])))
+            iter = tqdm(dataloaders[phase])
             
-            for batch in dataloaders[phase]:
-                
-                _ = next(iter)
+            for batch in iter:
 
                 inputs = batch[0].to(device)
                 labels = batch[1].to(device)
@@ -101,10 +99,10 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
             
             epoch_stats[phase].append((epoch_loss, epoch_acc))
 
-            print (f"\t {phase} loss {epoch_loss} acc {epoch_acc}")
+            print (f"{phase} loss {epoch_loss} acc {epoch_acc}")
             
             #  best model
-            if epoch_acc > best_acc:
+            if epoch_acc > best_acc and phase == 'val':
                 best_acc = epoch_acc
                 save_model(model, save_path)
 
