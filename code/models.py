@@ -5,8 +5,15 @@ import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
 import os, time
+import random
+import numpy as np
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def setSeed(my_seed:int):
+    torch.manual_seed(my_seed)
+    np.random.seed(my_seed)
+    random.seed(my_seed)
 
 def load_model(model, path):
     model.load_state_dict(torch.load(path, map_location=model.device))
@@ -50,7 +57,7 @@ def train_models(model, optimizer, dataloaders:dict, dataset_sizes:dict, schedul
     
     if not os.path.isdir("pts"):
         os.mkdir("pts")
-        
+
     save_path = os.path.join("pts", model_name)
     
     since = time.time()

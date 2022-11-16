@@ -1,5 +1,5 @@
 from code.data import create_train_datasets
-from code.models import create_model_and_optimizer, train_models
+from code.models import create_model_and_optimizer, train_models, setSeed
 from code.utils import train_stats_ploter
 
 POSITIVE_EXAMPLES="georges.csv"
@@ -19,6 +19,9 @@ def train_model():
     train_stats_ploter(train_stats)
 
 def main():
+    # Seed required for reproductivity
+    setSeed(123456)
+
     train_model();
 
 if __name__ == '__main__':

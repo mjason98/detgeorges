@@ -40,7 +40,9 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
     '''
     if not os.path.isdir("pts"):
         os.mkdir("pts")
-        
+    if not os.path.isdir("data"):
+        os.mkdir("data")
+
     data_images_downloader(positive_csv, image_folder="pos", data_folder=data_folder)
     data_images_downloader(negative_csv, image_folder="neg", data_folder=data_folder)
 
