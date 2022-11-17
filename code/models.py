@@ -206,18 +206,20 @@ def predict_single_image(model, image_path:str, model_name:str="model.pt", image
     img = data_transform(img).unsqueeze(0)
 
     # predict the class
+    load_model(model, model_path)
     model.eval()
     with torch.no_grad():
         outputs = model(img)
-        _, preds = torch.max(outputs, 1)
+        outputs = nn.functional.softmax(outputs, 1)
+        p, preds = torch.max(outputs, 1)
 
     # load the class names
     class_names = {}
     with open(idx_name_path, 'r') as file:
         for line in file.readlines():
-            values = line.split(' ')
-            class_names.update({values[1]:values[0]})
+            values = line.replace('\n','').split(' ')
+            class_names.update({int(values[1]):values[0]})
 
-    y = preds.squeeze().item()
-    print (f"# Prediction: The image is rated {class_names[y]}, with a probability of {'x'}.")
+    y, p = preds.squeeze().item(), p.item()
+    print (f"# Prediction: The image is rated '{class_names[y]}', with a probability of {p}.")
     
