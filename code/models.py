@@ -9,6 +9,9 @@ import os, time
 import random
 import numpy as np
 
+from .data import get_test_data_transform
+from PIL import Image
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def setSeed(my_seed:int):
@@ -55,7 +58,7 @@ def create_model_and_optimizer(model:str, lr=0.001, momentum=0.9):
         model_ft = model_ft.to(device)
 
         # for now, a simple optimizer
-        optimizer_ft = optim.RMSprop(model_ft.parameters(), lr=lr)#, momentum=0.9)
+        optimizer_ft = optim.Adam(model_ft.parameters(), lr=lr)#, momentum=0.9)
         # Decay LR by a factor of 0.1 every 7 epochs
         # exp_lr_scheduler = optim.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
@@ -165,6 +168,7 @@ def predict(model, dataloader, model_name='model.pt', load_saved_model=True, sho
     y_true = np.concatenate(y_true)
     y_pred = np.concatenate(y_pred)
 
+    # todo: optimize this calculations
     acc = metrics.accuracy_score(y_true, y_pred)
     f1 = metrics.f1_score(y_true, y_pred)
 
@@ -173,3 +177,47 @@ def predict(model, dataloader, model_name='model.pt', load_saved_model=True, sho
 
     with open(os.path.join('pts', model_name+'_test_metrics.txt'), 'w') as file:
         file.write(json.dumps({'acc': acc, 'f1': f1}))
+
+def predict_single_image(model, image_path:str, model_name:str="model.pt", image_size=224):
+    '''
+    Predicts the class belonging to the image given the pre-trained model.
+
+    Parameters:
+
+        model: Model 
+
+        image_path:str Path of the image to give it a label.
+    '''
+    
+    # Check if the necessary files for classification are present.
+
+    model_path = os.path.join("pts", model_name)
+    if not os.path.isfile(model_path):
+        raise Exception(f"There is no pre-trained model with the '{model_path}' path to be used for classification.")
+    
+    idx_name_path = os.path.join("pts", "train_index.txt")
+    if not os.path.isfile(idx_name_path):
+        raise Exception(f"There is no index mapping file with the '{idx_name_path}' path to be used for classification.")
+    
+    # load the image
+    data_transform = get_test_data_transform(image_size=image_size)
+    
+    img = Image.open(image_path)
+    img = data_transform(img).unsqueeze(0)
+
+    # predict the class
+    model.eval()
+    with torch.no_grad():
+        outputs = model(img)
+        _, preds = torch.max(outputs, 1)
+
+    # load the class names
+    class_names = {}
+    with open(idx_name_path, 'r') as file:
+        for line in file.readlines():
+            values = line.split(' ')
+            class_names.update({values[1]:values[0]})
+
+    y = preds.squeeze().item()
+    print (f"# Prediction: The image is rated {class_names[y]}, with a probability of {'x'}.")
+    
