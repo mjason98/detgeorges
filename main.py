@@ -12,6 +12,7 @@ NUM_WORKERS=2
 LEARNING_RATE=0.0001 #0.001
 MOMENTUM = 0.9
 EPOCHS=20
+BACTH_SIZE=32
 
 TRAIN_FOLDER='train'
 TEST_FOLDER='test/'
@@ -22,11 +23,11 @@ MODEL_NAME='modresnet.pt' #'modvgg16.pt'
 # BEST LR 'RESNET':
 
 def calculate_test_performance(model):
-    _, dataloader = create_test_dataset(TEST_FOLDER, num_workers=NUM_WORKERS)
+    _, dataloader = create_test_dataset(TEST_FOLDER, batch_size=BACTH_SIZE, num_workers=NUM_WORKERS)
     predict(model, dataloader, model_name=MODEL_NAME)
 
 def train_model():
-    datasets, dataloaders = create_train_datasets(POSITIVE_EXAMPLES, NEGATIVE_EXAMPLES, split=VALIDATION_SPLIT_P, num_workers=NUM_WORKERS, data_folder=TRAIN_FOLDER)
+    datasets, dataloaders = create_train_datasets(POSITIVE_EXAMPLES, NEGATIVE_EXAMPLES, batch_size=BACTH_SIZE, split=VALIDATION_SPLIT_P, num_workers=NUM_WORKERS, data_folder=TRAIN_FOLDER)
     model, optim, scheduler = create_model_and_optimizer('RESNET', lr=LEARNING_RATE, momentum=MOMENTUM)
     train_stats = train_models(model, optim, dataloaders, 
                               {ph:len(datasets[ph]) for ph in ['train', 'val']}, 

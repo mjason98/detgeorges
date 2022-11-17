@@ -28,7 +28,7 @@ def create_model_and_optimizer(model:str, lr=0.001, momentum=0.9):
 
     Parameters:
 
-        model:str the arquitecture of the model: ['VGG16', ...]
+        model:str the arquitecture of the model: ['VGG16', 'RESNET']
 
         lr: learning rate
     '''
@@ -52,6 +52,7 @@ def create_model_and_optimizer(model:str, lr=0.001, momentum=0.9):
 
         num_ftrs = model_ft.fc.in_features
         model_ft.fc =  nn.Linear(num_ftrs, 2)
+        model_ft = model_ft.to(device)
 
         # for now, a simple optimizer
         optimizer_ft = optim.RMSprop(model_ft.parameters(), lr=lr)#, momentum=0.9)
