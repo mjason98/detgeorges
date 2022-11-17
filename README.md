@@ -7,12 +7,15 @@ The present repository aims to provide an DL model to detect St. George on image
 Different parameters and optimizers were tested, as well as two pre-trained networks, VGG16 and ResNet5. Between the two, ResNet5 obtained the best results.
 
 
+<center>
 
 | Model    | learning rate | optim   | ACC    | F1     |
 |----------|---------------|---------|--------|--------|
 | ResNet50 |     0.0001    |   Adam  | 0.9815 | 0.9777 |
 | ResNet50 |     0.0001    | RMSPorp | 0.9782 | 0.9733 |
-|   VGG16  |     0.001     | Adagrad |        |        |
+|   VGG16  |     0.001     | Adagrad | 0.9056 | 0.9224 |
+
+</center>
 
 
 It was decided to use pre-trained models, because the styles of the photos varied: from stained glass, realistic and abstract paintings, statues, people, etc. 
@@ -71,12 +74,12 @@ At the end of its execution, it will show the metrics obtained in the test set. 
 To detect St. George in a single image, use the following command with the path to the image.
 
 ```shell
-python main --notrain -p <image path>
+python main.py --notrain -p <image path>
 ```
 
 The above command depends on having previously trained the model, if not, it is preferable to just use the '-p' parameter to train the model first and then perform future classifications.
 
 
 ```shell
-python main -p <image path>
+python main.py -p <image path>
 ```
