@@ -10,17 +10,17 @@ Different parameters and optimizers were tested, as well as two pre-trained netw
 
 | Model    | learning rate | optim   | ACC    | F1     |
 |----------|---------------|---------|--------|--------|
-| ResNet50 |     0.0001    | RMSPorp | 0.9782 | 0.9733 |
 | ResNet50 |     0.0001    |   Adam  | 0.9815 | 0.9777 |
+| ResNet50 |     0.0001    | RMSPorp | 0.9782 | 0.9733 |
 |   VGG16  |     0.001     | Adagrad |        |        |
 
 
 It was decided to use pre-trained models, because the styles of the photos varied: from stained glass, realistic and abstract paintings, statues, people, etc. 
 
 <p align="center">
-  <img src="images/im1.jpg" width="350" title="st george pichture">
-  <img src="images/im2.jpg" width="350" alt="st george pichture">
-  <img src="images/im3.jpg" width="350" alt="st george pichture">
+  <img src="images/im1.jpg" width="230" title="st george pichture">
+  <img src="images/im2.jpg" width="230" alt="st george pichture">
+  <img src="images/im3.jpg" width="230" alt="st george pichture">
 </p>
 
 These networks in their first layers are already tuned for the detection of low-level features, while the upper ones are used for the extraction of more abstract features such as objects.
@@ -64,7 +64,7 @@ To train the model, with the parameters that gave the best result, execute the f
 python main.py
 ```
 
-At the end of its execution, it will show the metrics obtained in the test set.
+At the end of its execution, it will show the metrics obtained in the test set. Pre-trained networks as well as training data are automatically downloaded.
 
 ### Detect St. George in a single image
 
