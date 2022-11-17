@@ -15,6 +15,17 @@ Different parameters and optimizers were tested, as well as two pre-trained netw
 |   VGG16  |     0.001     | Adagrad |        |        |
 
 
+It was decided to use pre-trained models, because the styles of the photos varied: from stained glass, realistic and abstract paintings, statues, people, etc. 
+
+<p align="center">
+  <img src="images/im1.jpg" width="350" title="st george pichture">
+  <img src="images/im2.jpg" width="350" alt="st george pichture">
+  <img src="images/im3.jpg" width="350" alt="st george pichture">
+</p>
+
+These networks in their first layers are already tuned for the detection of low-level features, while the upper ones are used for the extraction of more abstract features such as objects.
+
+Thus, since most of the St. George pictures are composed of a man in armor, riding a horse, with sword or spear killing a lizard or dragon, it is expected that the pre-trained network will better capture those features and relate them appropriately.
 
 
 ## Reproductivity
