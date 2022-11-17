@@ -36,35 +36,35 @@ Thus, since most of the St. George pictures are composed of a man in armor, ridi
 To reproduce the obtained results, it is first necessary to create an environment and install the dependencies. The repository is cloned first.
 
 ```shell
-git clone https://github.com/mjason98/detgeorges.git
-cd detgeorges
+$ git clone https://github.com/mjason98/detgeorges.git
+$ cd detgeorges
 ```
 
 Then create the environment and install the dependencies with pip.
 
 ```shell
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+$ python -m venv .venv
+$ source .venv/bin/activate
+$ pip install -r requirements.txt
 ```
 
-Then, the CSV files are copied as training dataset, where <path_to_file> is the path to them:
+For the training data, a folder with the files 'georges.csv' and 'non_georges.csv' is expected with the path <path_to_train_files>. 
+
+For the test data, just unzip the file and use the path to run the program. Only two folders, with the names 'george' and 'no_george', can be in the path. This can be checked with the 'ls' command.
 
 ```shell
-cp <path_to_file>/georges.csv .
-cp <path_to_file>/non_georges.csv .
-```
-
-For the test dataset, copy the ZIP file, unzip it and rename the folder to 'test':
-
-```shell
-unzip <path_to_file>/george_test_task.zip -d test
+$ unzip <path_to_test_zip>/george_test_task.zip
+$ ls -la george_test_task
+.
+..
+george
+no_george 
 ```
 
 To train the model, with the parameters that gave the best result, execute the following command.
 
 ```shell
-python main.py
+$ python main.py -t <path_to_train_files> -p george_test_task
 ```
 
 At the end of its execution, it will show the metrics obtained in the test set. Pre-trained networks as well as training data are automatically downloaded.
@@ -74,12 +74,12 @@ At the end of its execution, it will show the metrics obtained in the test set. 
 To detect St. George in a single image, use the following command with the path to the image.
 
 ```shell
-python main.py --notrain -i <image path>
+$ python main.py --notrain -i <image path>
 ```
 
 The above command depends on having previously trained the model, if not, it is preferable to just use the '-i' parameter to train the model first and then perform future classifications.
 
 
 ```shell
-python main.py -i <image path>
+$ python main.py -t <path_to_train_files> -p george_test_task -i <image path>
 ```
