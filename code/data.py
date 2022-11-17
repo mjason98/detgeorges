@@ -42,8 +42,8 @@ def create_train_datasets(positive_csv:str, negative_csv:str, batch_size=32, spl
     '''
     if not os.path.isdir("pts"):
         os.mkdir("pts")
-    if not os.path.isdir("train"):
-        os.mkdir("train")
+    if not os.path.isdir(data_folder):
+        os.mkdir(data_folder)
 
     data_images_downloader(positive_csv, image_folder="george", data_folder=data_folder)
     data_images_downloader(negative_csv, image_folder="no_george", data_folder=data_folder)
@@ -58,7 +58,7 @@ def create_train_datasets(positive_csv:str, negative_csv:str, batch_size=32, spl
     ])
     
     # load all images
-    image_dataset = datasets.ImageFolder(root='train/', transform=data_transform)
+    image_dataset = datasets.ImageFolder(root=data_folder, transform=data_transform)
     save_data_indices(image_dataset, 'pts')
 
     #split the data in train dataset and val dataset
