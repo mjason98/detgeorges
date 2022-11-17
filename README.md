@@ -48,7 +48,7 @@ $ source .venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-For the training data, a folder with the files 'georges.csv' and 'non_georges.csv' is expected with the path <path_to_train_files>. 
+For the training data, a folder with the files 'georges.csv' and 'non_georges.csv' is expected with the path <path_to_train_files>. It is necessary not to use a folder with the name 'train' inside the repo directory as it is reserved for creating the training data.
 
 For the test data, just unzip the file and use the path to run the program. Only two folders, with the names 'george' and 'no_george', can be in the path. This can be checked with the 'ls' command.
 
