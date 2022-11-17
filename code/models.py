@@ -17,7 +17,7 @@ def setSeed(my_seed:int):
     random.seed(my_seed)
 
 def load_model(model, path):
-    model.load_state_dict(torch.load(path, map_location=model.device))
+    model.load_state_dict(torch.load(path, map_location=device))
 
 def save_model(model, path):
     torch.save(model.state_dict(), path) 
@@ -43,6 +43,18 @@ def create_model_and_optimizer(model:str, lr=0.001, momentum=0.9):
 
         # for now, a simple optimizer
         optimizer_ft = optim.Adagrad(model_ft.parameters(), lr=lr)#, momentum=0.9)
+        # Decay LR by a factor of 0.1 every 7 epochs
+        # exp_lr_scheduler = optim.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+
+        return model_ft, optimizer_ft, None#exp_lr_scheduler
+    elif model == "RESNET":
+        model_ft = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
+
+        num_ftrs = model_ft.fc.in_features
+        model_ft.fc =  nn.Linear(num_ftrs, 2)
+
+        # for now, a simple optimizer
+        optimizer_ft = optim.RMSprop(model_ft.parameters(), lr=lr)#, momentum=0.9)
         # Decay LR by a factor of 0.1 every 7 epochs
         # exp_lr_scheduler = optim.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
@@ -132,6 +144,7 @@ def predict(model, dataloader, model_name='model.pt', load_saved_model=True, sho
         load_model(model, os.path.join('pts', model_name))
     
     cpu0 = torch.device("cpu")
+    model.eval()
 
     y_true, y_pred = [], []
 
@@ -143,10 +156,10 @@ def predict(model, dataloader, model_name='model.pt', load_saved_model=True, sho
             labels = batch[1].to(device).squeeze()
 
             outputs = model(inputs)
-            _, preds = torch.max(outputs, 1).squeeze()
+            _, preds = torch.max(outputs, 1)
             
             y_true.append(labels.to(cpu0).numpy())
-            y_pred.append(preds.to(cpu0).numpy())
+            y_pred.append(preds.squeeze().to(cpu0).numpy())
     
     y_true = np.concatenate(y_true)
     y_pred = np.concatenate(y_pred)
@@ -155,7 +168,7 @@ def predict(model, dataloader, model_name='model.pt', load_saved_model=True, sho
     f1 = metrics.f1_score(y_true, y_pred)
 
     if show_metrics:
-        print (f"# Metrics:  acc: {acc} f1: {f1}")
+        print (f"\n# Metrics:  acc: {acc} f1: {f1}\n")
 
-    with open(os.join('pts', model_name+'_test_metrics.txt'), 'w') as file:
+    with open(os.path.join('pts', model_name+'_test_metrics.txt'), 'w') as file:
         file.write(json.dumps({'acc': acc, 'f1': f1}))

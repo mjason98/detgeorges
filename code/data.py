@@ -46,6 +46,8 @@ def create_train_datasets(positive_csv:str, negative_csv:str, split=0.1, num_wor
     data_images_downloader(positive_csv, image_folder="pos", data_folder=data_folder)
     data_images_downloader(negative_csv, image_folder="neg", data_folder=data_folder)
 
+    print()
+
     data_transform = transforms.Compose([
         transforms.RandomResizedCrop(image_size),
         transforms.RandomHorizontalFlip(),
@@ -69,7 +71,7 @@ def create_test_dataset(file_path:str='test/', image_size=224, num_workers=4):
     '''
 
     data_transform = transforms.Compose([
-        transforms.Resize(image_size),
+        transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])

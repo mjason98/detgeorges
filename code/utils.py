@@ -47,7 +47,7 @@ def data_images_downloader(csv_path:str, image_folder:str ="images", data_folder
         else:
             print (f"\t WARNING: File { file_name } could not be downloaded")
 
-def train_stats_ploter(train_stats:dict, save_path='pt', model_name='model', save_raw=True):
+def train_stats_ploter(train_stats:dict, save_path='pts', model_name='model', save_raw=True):
     '''
         Plot the loss and acc values within the stats
 
