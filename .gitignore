@@ -1,4 +1,4 @@
 code/__pycache__
-data/*/
-data/train_index.txt
+train/*/
+train/train_index.txt
 *.csv
