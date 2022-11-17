@@ -4,7 +4,7 @@ The present repository aims to provide an DL model to detect St. George on image
 
 ## Results
 
-Different parameters and optimizers were tested, as well as two pre-trained networks, VGG16 and ResNet5. Between the two, ResNet5 obtained the best results.
+Different parameters and optimizers were tested, as well as two pre-trained networks, VGG16 and ResNet5. The best results were obtained by ResNet5.
 
 
 <center>
@@ -26,7 +26,7 @@ It was decided to use pre-trained models, because the styles of the photos varie
   <img src="images/im3.jpg" width="230" alt="st george pichture">
 </p>
 
-These networks in their first layers are already tuned for the detection of low-level features, while the upper ones are used for the extraction of more abstract features such as objects.
+These networks in their first layers are already tuned for the detection of low-level features, while deeper ones are intended to extract more complex features such as objects.
 
 Thus, since most of the St. George pictures are composed of a man in armor, riding a horse, with sword or spear killing a lizard or dragon, it is expected that the pre-trained network will better capture those features and relate them appropriately.
 
@@ -48,7 +48,7 @@ $ source .venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-For the training data, a folder with the files 'georges.csv' and 'non_georges.csv' is expected with the path <path_to_train_files>. It is necessary not to use a folder with the name 'train' inside the repo directory as it is reserved for creating the training data.
+For the training data, a folder with the files 'georges.csv' and 'non_georges.csv' is expected with the path <path_to_train_files>.
 
 For the test data, just unzip the file and use the path to run the program. Only two folders, with the names 'george' and 'no_george', can be in the path. This can be checked with the 'ls' command.
 

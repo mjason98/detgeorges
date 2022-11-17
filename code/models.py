@@ -209,7 +209,7 @@ def predict_single_image(model, image_path:str, model_name:str="model.pt", image
     load_model(model, model_path)
     model.eval()
     with torch.no_grad():
-        outputs = model(img)
+        outputs = model(img.to(device))
         outputs = nn.functional.softmax(outputs, 1)
         p, preds = torch.max(outputs, 1)
 
