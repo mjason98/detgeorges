@@ -74,12 +74,12 @@ At the end of its execution, it will show the metrics obtained in the test set. 
 To detect St. George in a single image, use the following command with the path to the image.
 
 ```shell
-python main.py --notrain -p <image path>
+python main.py --notrain -i <image path>
 ```
 
-The above command depends on having previously trained the model, if not, it is preferable to just use the '-p' parameter to train the model first and then perform future classifications.
+The above command depends on having previously trained the model, if not, it is preferable to just use the '-i' parameter to train the model first and then perform future classifications.
 
 
 ```shell
-python main.py -p <image path>
+python main.py -i <image path>
 ```
