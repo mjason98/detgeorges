@@ -45,8 +45,8 @@ def create_train_datasets(positive_csv:str, negative_csv:str, batch_size=32, spl
     if not os.path.isdir("train"):
         os.mkdir("train")
 
-    data_images_downloader(positive_csv, image_folder="pos", data_folder=data_folder)
-    data_images_downloader(negative_csv, image_folder="neg", data_folder=data_folder)
+    data_images_downloader(positive_csv, image_folder="georges", data_folder=data_folder)
+    data_images_downloader(negative_csv, image_folder="non_georges", data_folder=data_folder)
 
     print()
 
@@ -67,16 +67,21 @@ def create_train_datasets(positive_csv:str, negative_csv:str, batch_size=32, spl
 
     return datasets_d, dataloaders_d
 
-def create_test_dataset(file_path:str='test/', batch_size=32, image_size=224, num_workers=4):
-    '''
-        The directory must contain two folders: 'pos' and 'neg', which will contain the images of the positive and negative classes respectively.
-    '''
-
+def get_test_data_transform(image_size:int):
     data_transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
+
+    return data_transform
+
+def create_test_dataset(file_path:str='test/', batch_size=32, image_size=224, num_workers=4):
+    '''
+        The directory must contain two folders: 'georges' and 'non_georges', which will contain the images of the positive and negative classes respectively.
+    '''
+
+    data_transform = get_test_data_transform(image_size=image_size)
 
     # load all images
     image_dataset = datasets.ImageFolder(root=file_path, transform=data_transform)

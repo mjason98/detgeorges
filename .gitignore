@@ -2,3 +2,4 @@ code/__pycache__
 train/*/
 train/train_index.txt
 *.csv
+pts
